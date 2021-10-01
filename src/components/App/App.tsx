@@ -1,9 +1,14 @@
+import { TextInput } from '@Components';
+import { GlobalStyles } from '@Assets';
 import React from 'react';
 
 export function App() {
   return (
     <div className="App">
-      APP
+      <GlobalStyles/>
+      <TextInput
+        placeholder="write smt"
+      />
     </div>
   );
 }
