@@ -1,3 +1,6 @@
 export * from './App/App'
+export * from './View'
+export * from './Sidebar'
 export * from './common/inputs/TextInput/'
 export * from './common/buttons/Button'
+export * from './layout/AppLayout'

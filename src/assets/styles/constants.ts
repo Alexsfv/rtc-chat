@@ -18,3 +18,12 @@ export const COLORS = {
 export const SHADOWS = {
     PRIMARY: `2px 2px 2px 2px ${COLORS.GRAY_EXTA_LITE}`,
 }
+
+export const BREAKPOINTS = {
+    XXL: 1400,
+    XL: 1200,
+    L: 992,
+    M: 768,
+    S: 576,
+    XS: 480,
+}
