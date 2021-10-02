@@ -9,6 +9,10 @@ export const COLORS = {
     GRAY_LITE: 'rgba(131,131,131,0.6)',
     GRAY_EXTA_LITE: 'rgba(131,131,131,0.3)',
     DANGER: "#ff4c4c",
+    GOLD: "#ff971c",
+    GOLD_BRIGHT: "#ffb765",
+    GREEN: "#01d096",
+    GREEN_BRIGHT: "#05e3af",
 }
 
 export const SHADOWS = {
