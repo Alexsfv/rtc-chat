@@ -8,6 +8,8 @@ export function App() {
       <GlobalStyles/>
       <TextInput
         placeholder="write smt"
+        error="Something went weong"
+        disabled
       />
     </div>
   );

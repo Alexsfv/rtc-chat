@@ -13,12 +13,15 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((pro
         <Wrapper>
             <Label>
                 <Input
+                    error={error}
+                    postfix={Boolean(postfix)}
                     ref={ref}
+                    data-testid="input"
                     {...otherProps}
                 />
                 {postfix}
             </Label>
-            <Error >
+            <Error error={error} >
                 {error}
             </Error>
         </Wrapper>
