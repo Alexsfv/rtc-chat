@@ -6,11 +6,12 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>((pro
     const {
         error,
         postfix,
+        className,
         ...otherProps
     } = props
 
     return (
-        <Wrapper>
+        <Wrapper className={className}>
             <Label>
                 <Input
                     error={error}

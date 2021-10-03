@@ -1,0 +1,24 @@
+import { COLORS } from "assets";
+import styled from "styled-components";
+
+
+export const Wrapper = styled.div`
+    position: absolute;
+    display: grid;
+    max-width: 180px;
+    max-height: 360px;
+    align-items: center;
+    justify-content: center;
+    left: 20px;
+    top: 20px;
+    border-radius: 12px;
+    border: 2px solid ${COLORS.WHITE};
+    overflow: hidden;
+    z-index: 2;
+`
+
+export const Video = styled.video`
+    display: block;
+    width: 100%;
+    height: 100%;
+`

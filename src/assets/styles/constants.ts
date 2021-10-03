@@ -13,6 +13,7 @@ export const COLORS = {
     GOLD_BRIGHT: "#ffb765",
     GREEN: "#01d096",
     GREEN_BRIGHT: "#05e3af",
+    GREEN_DARK: "#00966c",
 }
 
 export const SHADOWS = {

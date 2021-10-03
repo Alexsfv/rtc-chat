@@ -7,7 +7,7 @@ export const StyledButton = styled.button<ButtonProps>`
     max-width: 100%;
     padding: 8px 10px;
     font-size: 18px;
-    border-radius: 14px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     transition: filter .2s ease;
