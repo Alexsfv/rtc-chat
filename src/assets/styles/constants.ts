@@ -14,6 +14,7 @@ export const COLORS = {
     GREEN: "#01d096",
     GREEN_BRIGHT: "#05e3af",
     GREEN_DARK: "#00966c",
+    GREEN_SHINE: "#f2fcf4",
 }
 
 export const SHADOWS = {

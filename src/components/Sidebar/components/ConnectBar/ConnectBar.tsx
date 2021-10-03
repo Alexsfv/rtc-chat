@@ -27,7 +27,7 @@ export const ConnectBar: React.FC<ConnectBarProps> = () => {
 
             <CallArea>
                 <Text>Personal code</Text>
-                <TextInput className="connect-bar-input" />
+                <TextInput className="connect-bar-input" design="opacity"/>
                 <Button className="connect-bar-btn">
                     <i className="fa fa-comment-o connect-bar-btn-icon" />
                     Chat

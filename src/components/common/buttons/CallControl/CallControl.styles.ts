@@ -1,4 +1,4 @@
-import { COLORS } from "@Assets";
+import { BREAKPOINTS, COLORS } from "@Assets";
 import styled, { css } from "styled-components";
 import { CallControlProps } from './CallControl.types'
 
@@ -35,11 +35,18 @@ export const StyledButton = styled.button<CallControlProps>`
 
 function largeSize(p: CallControlProps) {
     return css`
-    width: 75px;
-    height: 75px;
-    font-size: 26px;
-    border-radius: 25px;
-`
+        width: 75px;
+        height: 75px;
+        font-size: 26px;
+        border-radius: 25px;
+
+        @media (max-width: ${BREAKPOINTS.XS}px) {
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            border-radius: 20px;
+        }
+    `
 }
 
 function smallSize(p: CallControlProps) {
@@ -47,5 +54,10 @@ function smallSize(p: CallControlProps) {
         width: 50px;
         height: 50px;
         border-radius: 50%;
+
+        @media (max-width: ${BREAKPOINTS.XS}px) {
+            width: 40px;
+            height: 40px;
+        }
     `
 }

@@ -1,5 +1,5 @@
 import { Logo } from 'components'
-import { Wrapper, Video } from './Placeholder.styled'
+import { Wrapper } from './Placeholder.styled'
 
 export const Placeholder: React.FC<{}> = () => {
 

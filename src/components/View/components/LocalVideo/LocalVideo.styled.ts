@@ -1,4 +1,4 @@
-import { COLORS } from "assets";
+import { BREAKPOINTS, COLORS } from "assets";
 import styled from "styled-components";
 
 
@@ -15,6 +15,11 @@ export const Wrapper = styled.div`
     border: 2px solid ${COLORS.WHITE};
     overflow: hidden;
     z-index: 2;
+
+    @media (max-width: ${BREAKPOINTS.XS}px) {
+        left: 10px;
+        top: 10px;
+    }
 `
 
 export const Video = styled.video`

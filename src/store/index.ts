@@ -1,1 +1,1 @@
-export {}
+export {rootState} from './rootState'

@@ -1,0 +1,1 @@
+export { BarSwitcher } from './BarSwitcher'

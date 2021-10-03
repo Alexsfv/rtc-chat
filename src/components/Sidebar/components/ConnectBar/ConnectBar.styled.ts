@@ -1,4 +1,4 @@
-import { COLORS } from "assets";
+import { BREAKPOINTS, COLORS } from "assets";
 import styled from "styled-components";
 
 
@@ -8,12 +8,16 @@ export const Wrapper = styled.div`
     padding: 20px;
     color: ${COLORS.WHITE};
     background: linear-gradient(0deg, ${COLORS.GREEN_DARK}, ${COLORS.GREEN_BRIGHT});
-    border-radius: 24px;
     flex-direction: column;
     justify-content: flex-start;
+    overflow: auto;
 
     .connect-bar-checkbox {
         margin-top: auto;
+    }
+
+    @media (max-width: ${BREAKPOINTS.XS}px) {
+        padding: 10px;
     }
 `
 
@@ -63,7 +67,7 @@ export const CodeArea = styled.div`
 
 export const CallArea = styled.div`
     display: grid;
-    margin: 40px 0 0;
+    margin: 25px 0 15px;
     gap: 15px 10px;
     grid-template-columns: 1fr 1fr;
 

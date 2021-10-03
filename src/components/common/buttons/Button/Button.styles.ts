@@ -5,6 +5,7 @@ import { ButtonProps } from './Button.types'
 export const StyledButton = styled.button<ButtonProps>`
     display: inline-block;
     max-width: 100%;
+    max-height: 100%;
     padding: 8px 10px;
     font-size: 18px;
     border-radius: 8px;

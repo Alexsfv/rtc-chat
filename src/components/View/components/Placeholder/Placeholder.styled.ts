@@ -1,4 +1,3 @@
-import { COLORS } from "assets";
 import styled from "styled-components";
 
 

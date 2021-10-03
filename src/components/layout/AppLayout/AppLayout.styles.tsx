@@ -6,6 +6,7 @@ export const Layout = styled.div`
     display: grid;
 	min-height: 100vh;
     width: 100%;
+    padding: 10px;
     grid-template-columns: 1fr 480px;
 
     @media (max-width: ${BREAKPOINTS.XXL}px) {
@@ -18,6 +19,7 @@ export const Layout = styled.div`
 
     @media (max-width: ${BREAKPOINTS.M}px) {
         // Position fixed
+        padding: 0px;
         grid-template-columns: 1fr;
     }
 `

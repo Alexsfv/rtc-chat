@@ -1,2 +1,2 @@
-export { COLORS } from './constants'
+export { COLORS, BREAKPOINTS } from './constants'
 export { GlobalStyles } from './GlobalStyles'
