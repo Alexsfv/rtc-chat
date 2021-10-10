@@ -1,7 +1,6 @@
 import { MessengerBarProps } from "./MessengerBar.types"
 import { InputField, Message, MessageList, Wrapper, } from './MessengerBar.styled'
-import { Button, Checkbox, Logo, TextInput } from "components"
-import { useState } from "react"
+import { Button, TextInput } from "components"
 
 const messages = [
     {
@@ -24,8 +23,6 @@ const messages = [
 ]
 
 export const MessengerBar: React.FC<MessengerBarProps> = () => {
-
-    const [allowRandom, setAllowRandom] = useState(false)
 
     return (
         <Wrapper>

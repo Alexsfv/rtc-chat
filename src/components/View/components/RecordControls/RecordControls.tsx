@@ -1,6 +1,5 @@
 import { Control, Wrapper } from './RecordControls.styled'
 import { observer } from 'mobx-react-lite'
-import { rootState } from 'store'
 import { useState } from 'react'
 
 export const RecordControls: React.FC<{}> = observer(() => {

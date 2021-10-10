@@ -23,6 +23,7 @@
     "paths": {
       "@Assets": [ "assets/"],
       "@Components": [ "components/"],
+      "@Services": [ "services/"],
       "@Utils": [ "utils/"],
       "@Store": [ "store/"],
     }

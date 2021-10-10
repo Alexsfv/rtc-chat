@@ -11,6 +11,7 @@ export const LocalVideo: React.FC<LocalVideoProps> = observer((props) => {
 
     useEffect(() => {
         media.receiveLocalStream()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -18,6 +19,7 @@ export const LocalVideo: React.FC<LocalVideoProps> = observer((props) => {
         if (video) {
             video.srcObject = media.localStream
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [media.localStream])
 
     return (

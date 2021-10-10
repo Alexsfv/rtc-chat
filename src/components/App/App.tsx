@@ -1,10 +1,15 @@
 import { AppLayout, View, Sidebar, CallModal } from '@Components';
 import { GlobalStyles } from '@Assets';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { SocketService } from 'services';
 
 export function App() {
 
     const [showModal, setShowModal] = useState(true)
+
+    useEffect(() => {
+        SocketService.connect()
+    }, [])
 
     return (
         <>

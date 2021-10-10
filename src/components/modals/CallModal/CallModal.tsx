@@ -22,6 +22,7 @@ export const CallModal: React.FC<CallModalProps> = (props) => {
         return () => {
             document.removeEventListener('keydown', keyHandler)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
