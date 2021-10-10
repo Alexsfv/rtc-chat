@@ -1,15 +1,24 @@
 import { AppLayout, View, Sidebar, CallModal } from '@Components';
 import { GlobalStyles } from '@Assets';
 import React, { useEffect, useState } from 'react';
-import { SocketService } from 'services';
+import { rtcService, socketService } from 'services';
+import { rootState } from 'store';
+import { observer } from 'mobx-react-lite'
 
-export function App() {
+export const App = observer(() => {
 
-    const [showModal, setShowModal] = useState(true)
+    const [showModal, setShowModal] = useState(false)
+    const media = rootState.media
 
     useEffect(() => {
-        SocketService.connect()
+        socketService.connect()
     }, [])
+
+    useEffect(() => {
+        if (media.localStream) {
+            rtcService.setUpPeers(media.localStream)
+        }
+    }, [media.localStream])
 
     return (
         <>
@@ -29,4 +38,4 @@ export function App() {
             </AppLayout>
         </>
     );
-}
+})

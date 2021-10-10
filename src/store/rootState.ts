@@ -1,4 +1,4 @@
-import { mediaState } from './media';
+import { mediaState } from './mediaState';
 import { UIState } from "./uiState";
 
 export const rootState = {

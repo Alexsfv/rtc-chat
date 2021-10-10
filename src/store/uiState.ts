@@ -19,6 +19,8 @@ class UIStore {
     setOpenedTypeSidebar = (val: SwitchBars) => {
         this.openedTypeSidebar = val
     }
+
+
 }
 
 export const UIState = new UIStore()
