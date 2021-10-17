@@ -9,6 +9,7 @@ import { rtcService } from 'services'
 export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
 
     const personalCode = rootState.media.personalCode
+    const isConnected = rootState.media.isConnected
 
     const [allowRandom, setAllowRandom] = useState(false)
     const [connectCode, setConnectCode] = useState('')
@@ -49,14 +50,19 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
                     className="connect-bar-input"
                     design="opacity"
                     value={connectCode}
+                    disabled={isConnected}
                     onChange={e => setConnectCode(e.target.value)}
                 />
-                <Button className="connect-bar-btn">
+                <Button
+                    className="connect-bar-btn"
+                    disabled={isConnected}
+                >
                     <i className="fa fa-comment-o connect-bar-btn-icon" />
                     Chat
                 </Button>
                 <Button
                     textColor="gold"
+                    disabled={isConnected}
                     onClick={handleVideoByCode}
                 >
                     <i className="fa fa-video-camera connect-bar-btn-icon" />
@@ -66,12 +72,16 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
 
             <CallArea>
                 <Text>Random person</Text>
-                <Button className="connect-bar-btn">
+                <Button
+                    className="connect-bar-btn"
+                    disabled={isConnected}
+                >
                     <i className="fa fa-comment-o connect-bar-btn-icon" />
                     Chat
                 </Button>
                 <Button
                     textColor="gold"
+                    disabled={isConnected}
                 >
                     <i className="fa fa-video-camera connect-bar-btn-icon" />
                     Video
@@ -82,6 +92,7 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
                 id="allow-random-checkbox"
                 className="connect-bar-checkbox"
                 checked={allowRandom}
+                disabled={isConnected}
                 onChange={(e) => setAllowRandom(!allowRandom)}
             >
                 <Text>Allow connection from random</Text>

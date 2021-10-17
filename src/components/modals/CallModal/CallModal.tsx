@@ -1,16 +1,34 @@
 import { Wrapper, Body, Title, IconWrapper, Description, Control, ControlsWrapper, Background } from "./CallModal.styles";
-import { CallModalProps } from ".";
 import { useEffect } from "react";
+import { observer } from "mobx-react-lite"
+import { rootState } from 'store';
 
 
-export const CallModal: React.FC<CallModalProps> = (props) => {
+export const CallModal: React.FC<{}> = observer(() => {
     const {
+        isShow,
         title,
         description,
+        onClose,
         onAccept,
         onReject,
-        onClose,
-    } = props
+        setShow,
+    } = rootState.callModal
+
+    const handleAccept = () => {
+        if (onAccept) onAccept()
+        setShow(false)
+    }
+
+    const handleReject = () => {
+        if (onReject) onReject()
+        setShow(false)
+    }
+
+    const handleBackgroundClick = () => {
+        if (onClose) onClose()
+        setShow(false)
+    }
 
     useEffect(() => {
         const keyHandler = (e: KeyboardEvent) => {
@@ -25,9 +43,11 @@ export const CallModal: React.FC<CallModalProps> = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    if (!isShow) return null
+
     return (
         <Wrapper>
-            <Background onClick={onClose} />
+            <Background onClick={handleBackgroundClick} />
             <Body>
                 <Title>{title}</Title>
                 <IconWrapper>
@@ -40,7 +60,7 @@ export const CallModal: React.FC<CallModalProps> = (props) => {
 
                 <ControlsWrapper>
                     {onAccept && (
-                        <Control onClick={onAccept}>
+                        <Control onClick={handleAccept}>
                             <i className="fa fa-phone icon" />
                             Accept
                         </Control>
@@ -48,7 +68,7 @@ export const CallModal: React.FC<CallModalProps> = (props) => {
                     {onReject && (
                         <Control
                             reject={true}
-                            onClick={onReject}
+                            onClick={handleReject}
                         >
                             <i className="fa fa-times icon" />
                             Reject
@@ -58,4 +78,4 @@ export const CallModal: React.FC<CallModalProps> = (props) => {
             </Body>
         </Wrapper>
     )
-}
+})

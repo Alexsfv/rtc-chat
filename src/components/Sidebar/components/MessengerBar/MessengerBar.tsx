@@ -1,34 +1,33 @@
 import { MessengerBarProps } from "./MessengerBar.types"
 import { InputField, Message, MessageList, Wrapper, } from './MessengerBar.styled'
 import { Button, TextInput } from "components"
+import { useState } from 'react'
+import { rtcService } from 'services'
+import { rootState } from 'store'
+import { observer } from 'mobx-react-lite'
 
-const messages = [
-    {
-        text: 'Hello',
-        isOpposite: true,
-    },
-    {
-        text: 'Whats up?',
-        isOpposite: true,
-    },
-    {
-        text: 'Hello',
-        isOpposite: false,
-    },
-    {
-        text: 'Im fine. And you?',
-        isOpposite: false,
-    },
+export const MessengerBar: React.FC<MessengerBarProps> = observer(() => {
 
-]
+    const messages = rootState.ui.messages
+    const isConnected = rootState.media.isConnected
 
-export const MessengerBar: React.FC<MessengerBarProps> = () => {
+    const [message, setMessage] = useState<string>('')
+
+    const handleSend = () => {
+        if (!message || !isConnected) return null;
+        rtcService.sendMessage(message)
+        rootState.ui.addMessage({
+            text: message,
+            isOpposite: false,
+        })
+        setMessage('')
+    }
 
     return (
         <Wrapper>
             <MessageList>
                 {
-                    [...messages, ...messages, ...messages, ...messages].map(m => (
+                    messages.map(m => (
                         <Message
                             key={Math.random()}
                             opposite={m.isOpposite}
@@ -40,18 +39,20 @@ export const MessengerBar: React.FC<MessengerBarProps> = () => {
             </MessageList>
             <InputField>
                 <TextInput
+                    value={message}
                     design="default"
                     postfix={
                         <Button
                             textColor="gold"
                             className="message-bar-send-btn"
+                            onClick={handleSend}
                         >
                             <i className="fa fa-paper-plane-o" />
                         </Button>
                     }
+                    onChange={e => setMessage(e.target.value)}
                 />
-
             </InputField>
         </Wrapper>
     )
-}
+})

@@ -37,6 +37,10 @@ class MediaStore {
     setIsConnected = (val: boolean) => {
         this.isConnected = val
     }
+
+    resetRemoteStream = () => {
+        this.remoteStream = new MediaStream()
+    }
 }
 
 export const mediaState = new MediaStore()

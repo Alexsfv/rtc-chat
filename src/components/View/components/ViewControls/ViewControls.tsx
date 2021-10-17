@@ -11,29 +11,40 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
     const media = rootState.media
     const [activeMicro, setActiveMicro] = useState(true)
 
-    const handleMicro = () => {
-        setActiveMicro(!activeMicro)
+    const switchTrack = (kind: MediaStreamTrack['kind']) => {
         media.localStream.getTracks().forEach(track => {
-            if (track.kind === 'video') {
-                track.enabled = !activeMicro
+            if (track.kind === kind) {
+                track.enabled = !track.enabled
             }
         })
     }
 
+    const handleMicro = () => {
+        setActiveMicro(!activeMicro)
+        switchTrack('audio')
+    }
 
+    const handleVideo = () => {
+        switchTrack('video')
+    }
+
+    const handleHangUp = () => {
+        rtcService.sendDisconnect()
+        rtcService.disconnect()
+    }
 
     return (
         <Wrapper>
             <CallControl onClick={handleMicro}>
                 <i className={`fa fa-microphone${activeMicro ? '' : "-slash"} icon`} />
             </CallControl>
-            <CallControl>
+            <CallControl onClick={handleVideo}>
                 <i className="fa fa-camera icon"></i>
             </CallControl>
             <CallControl
                 size="large"
                 color="red"
-                onClick={rtcService.disconnect}
+                onClick={handleHangUp}
             >
                 <i className="fa fa-phone icon-large"></i>
             </CallControl>
