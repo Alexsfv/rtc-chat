@@ -4,12 +4,13 @@ import { Button, Checkbox, Logo, TextInput } from "components"
 import { useState } from "react"
 import { observer } from 'mobx-react-lite'
 import { rootState } from 'store'
-import { rtcService } from 'services'
+import { CallType, CreateOfferData, rtcService } from 'services'
 
 export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
 
     const personalCode = rootState.media.personalCode
-    const isConnected = rootState.media.isConnected
+    const isConnected = rootState.call.isConnected
+    const ui = rootState.ui
 
     const [allowRandom, setAllowRandom] = useState(false)
     const [connectCode, setConnectCode] = useState('')
@@ -18,9 +19,17 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
         window.navigator.clipboard.writeText(personalCode)
     }
 
-    const handleVideoByCode = () => {
+    const handleCall = (callType: CreateOfferData['callType']) => () => {
         if (!connectCode) return null;
-        rtcService.createOffer(connectCode)
+        const data: CreateOfferData = {
+            calleeId: connectCode,
+            callType,
+        }
+        rtcService.createOffer(data)
+    }
+
+    const handleRandomCall = (callType: CallType) => () => {
+        rtcService.createRandomOffer(callType)
     }
 
     return (
@@ -56,6 +65,7 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
                 <Button
                     className="connect-bar-btn"
                     disabled={isConnected}
+                    onClick={handleCall('CHAT_PERSONAL')}
                 >
                     <i className="fa fa-comment-o connect-bar-btn-icon" />
                     Chat
@@ -63,7 +73,7 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
                 <Button
                     textColor="gold"
                     disabled={isConnected}
-                    onClick={handleVideoByCode}
+                    onClick={handleCall('VIDEO_PERSONAL')}
                 >
                     <i className="fa fa-video-camera connect-bar-btn-icon" />
                     Video
@@ -75,6 +85,7 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
                 <Button
                     className="connect-bar-btn"
                     disabled={isConnected}
+                    onClick={handleRandomCall('CHAT_RANDOM')}
                 >
                     <i className="fa fa-comment-o connect-bar-btn-icon" />
                     Chat
@@ -82,6 +93,7 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
                 <Button
                     textColor="gold"
                     disabled={isConnected}
+                    onClick={handleRandomCall('VIDEO_RANDOM')}
                 >
                     <i className="fa fa-video-camera connect-bar-btn-icon" />
                     Video
@@ -91,13 +103,12 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
             <Checkbox
                 id="allow-random-checkbox"
                 className="connect-bar-checkbox"
-                checked={allowRandom}
+                checked={ui.allowRandomConnect}
                 disabled={isConnected}
-                onChange={(e) => setAllowRandom(!allowRandom)}
+                onChange={() => ui.setAllowRandomConnect(!ui.allowRandomConnect)}
             >
                 <Text>Allow connection from random</Text>
             </Checkbox>
-
         </Wrapper>
     )
 })

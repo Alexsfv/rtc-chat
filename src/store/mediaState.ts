@@ -5,7 +5,6 @@ class MediaStore {
     localStream: MediaStream = new MediaStream()
     remoteStream: MediaStream = new MediaStream()
     personalCode: string = ""
-    isConnected: boolean = false
 
     constructor() {
         makeAutoObservable(
@@ -13,7 +12,6 @@ class MediaStore {
             {
                 receiveLocalStream: action.bound,
                 setPersonalCode: action.bound,
-                setIsConnected: action.bound,
             }
         )
     }
@@ -32,10 +30,6 @@ class MediaStore {
 
     setPersonalCode = (val: string) => {
         this.personalCode = val
-    }
-
-    setIsConnected = (val: boolean) => {
-        this.isConnected = val
     }
 
     resetRemoteStream = () => {

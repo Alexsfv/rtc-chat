@@ -10,10 +10,12 @@ class UIStore {
     openedSideBar: boolean = false
     openedTypeSidebar: SwitchBars = "connect"
     messages: MessageChat[] = []
+    allowRandomConnect: boolean = false
 
     constructor() {
         makeAutoObservable(this, {
             setOpenedSidebar: action.bound,
+            setAllowRandomConnect: action.bound,
             setOpenedTypeSidebar: action.bound,
             addMessage: action.bound,
             cleanMessages: action.bound,
@@ -22,6 +24,10 @@ class UIStore {
 
     setOpenedSidebar = (val: boolean) => {
         this.openedSideBar = val
+    }
+
+    setAllowRandomConnect = (val: boolean) => {
+        this.allowRandomConnect = val
     }
 
     setOpenedTypeSidebar = (val: SwitchBars) => {

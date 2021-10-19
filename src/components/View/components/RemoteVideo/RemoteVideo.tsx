@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react'
 export const RemoteVideo: React.FC<RemoteVideoProps> = observer(() => {
 
     const media = rootState.media
+    const call = rootState.call
 
     const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -16,7 +17,7 @@ export const RemoteVideo: React.FC<RemoteVideoProps> = observer(() => {
             video.srcObject = media.remoteStream
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [media.isConnected])
+    }, [call.isConnected])
 
     return (
         <Wrapper>

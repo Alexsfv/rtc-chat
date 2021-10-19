@@ -1,10 +1,17 @@
 import { Control, Wrapper } from './RecordControls.styled'
 import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
+import { rootState } from 'store'
 
 export const RecordControls: React.FC<{}> = observer(() => {
 
+    const call = rootState.call
+
     const [isRecording, setIsRecording] = useState(false)
+
+    if (!call.isConnected) {
+        return null
+    }
 
     return (
         <Wrapper>

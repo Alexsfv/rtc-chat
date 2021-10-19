@@ -1,4 +1,4 @@
-import { DisconnectPeer, IceCandidateData, OfferData } from 'services'
+import { CreateOfferData, DisconnectPeer, IceCandidateData, OfferData } from 'services'
 import io, { Socket } from 'socket.io-client'
 import { rootState } from 'store'
 import { rtcService } from './index'
@@ -28,6 +28,9 @@ class SocketService {
         this.socket?.on('sendIceCandidate', (data: IceCandidateData) => {
             rtcService.handleIceCandidate(data)
         })
+        this.socket?.on('sendRandomOffer', (data: CreateOfferData) => {
+            rtcService.createOffer(data)
+        })
         this.socket?.on('peerDisconnect', () => {
             rtcService.disconnect()
         })
@@ -40,6 +43,10 @@ class SocketService {
     sendOffer = (data: OfferData) => {
         this.socket?.emit('sendOfferSDP', data)
         console.log('sendOfferSDP')
+    }
+
+    sendRandomOffer = (data: CreateOfferData) => {
+        this.socket?.emit('sendRandomOffer', data)
     }
 
     sendAnswer = (data: OfferData) => {

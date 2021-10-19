@@ -9,7 +9,7 @@ import { observer } from 'mobx-react-lite'
 export const MessengerBar: React.FC<MessengerBarProps> = observer(() => {
 
     const messages = rootState.ui.messages
-    const isConnected = rootState.media.isConnected
+    const isConnected = rootState.call.isConnected
 
     const [message, setMessage] = useState<string>('')
 
@@ -21,6 +21,10 @@ export const MessengerBar: React.FC<MessengerBarProps> = observer(() => {
             isOpposite: false,
         })
         setMessage('')
+    }
+
+    const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') handleSend()
     }
 
     return (
@@ -50,6 +54,7 @@ export const MessengerBar: React.FC<MessengerBarProps> = observer(() => {
                             <i className="fa fa-paper-plane-o" />
                         </Button>
                     }
+                    onKeyDown={handleKey}
                     onChange={e => setMessage(e.target.value)}
                 />
             </InputField>

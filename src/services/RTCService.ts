@@ -1,7 +1,8 @@
-import { IceCandidateData, OfferData, OfferDataStatus, OfferPerson, socketService } from 'services';
+import { CallType, CreateOfferData, IceCandidateData, OfferData, OfferDataStatus, OfferPerson, socketService } from 'services';
 import { rootState } from 'store';
 import { callModalTitleRequest } from 'utils';
 import { Observer } from './Observer';
+import { DisconnectOptions } from './types';
 
 const serversConfig: RTCConfiguration = {
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
@@ -10,27 +11,29 @@ const serversConfig: RTCConfiguration = {
 export class RTCService extends Observer {
     localPeer: RTCPeerConnection | null = null
     dataChannel: RTCDataChannel | null = null
-    caller: OfferPerson | null = null
-    callee: OfferPerson | null = null
 
     constructor() { super() }
 
-    setUpPeers = () => {
+    setUpPeers = (callType: CallType) => {
         const localStream = rootState.media.localStream
         this.localPeer = new RTCPeerConnection(serversConfig)
 
         const handleConnectionChange = () => {
-            if (this.localPeer?.connectionState === 'connected') {
-                // this.setUpDataChannel()
+            const status = this.localPeer?.connectionState
+            if (status === 'connected') {
+                rootState.call.setIsConnected(true)
+            } else if (status === 'disconnected' || status === 'failed') {
+                rootState.call.setIsConnected(false)
             }
             console.log('Peers connected!', this.localPeer?.connectionState)
         }
 
         const handleCandidate = (e: RTCPeerConnectionIceEvent) => {
-            if (e.candidate && this.caller) {
+            const caller = rootState.call.caller
+            if (e.candidate && caller) {
                 console.log('handleCandidate', e);
                 const candidateData: IceCandidateData = {
-                    partnerId: this.caller.id,
+                    partnerId: caller.id,
                     candidate: e.candidate,
                 }
                 socketService.sendIceCandidate(candidateData)
@@ -39,12 +42,9 @@ export class RTCService extends Observer {
 
         const handleTrack = (e: RTCTrackEvent) => {
             console.log('handleTrack', e)
-            const tracksLength = rootState.media.remoteStream.getTracks().length
-            console.log('handleTrack getTracks', rootState.media.remoteStream.getTracks());
-
-
+            // const tracksLength = rootState.media.remoteStream.getTracks().length
             rootState.media.remoteStream.addTrack(e.track)
-            rootState.media.setIsConnected(tracksLength !== 0)
+            // rootState.media.setIsConnected(tracksLength !== 0)
         }
 
         const handleDataChannel = (e: RTCDataChannelEvent) => {
@@ -54,22 +54,30 @@ export class RTCService extends Observer {
 
         this.localPeer.addEventListener('icecandidate', handleCandidate)
         this.localPeer.addEventListener('connectionstatechange', handleConnectionChange)
-        this.localPeer.addEventListener('track', handleTrack)
         this.localPeer.addEventListener('datachannel', handleDataChannel)
 
-        localStream.getTracks().forEach(t => this.localPeer?.addTrack(t, localStream))
+        if (callType === 'VIDEO_PERSONAL' || callType === 'VIDEO_RANDOM') {
+            this.localPeer.addEventListener('track', handleTrack)
+            localStream.getTracks().forEach(t => this.localPeer?.addTrack(t, localStream))
+        }
     }
 
     setUpDataChannel = () => {
-        if (!this.localPeer) return null;
+        if (!this.localPeer) {
+            console.log('111111111111111112222222222222222222');
+            return null;
+        }
         console.log('setUpDataChannel');
         if (!this.dataChannel) {
+            console.log('555555555');
             this.dataChannel = this.localPeer.createDataChannel('message')
         }
         this.dataChannel.addEventListener('open', () => {
+            console.log('open---')
             rootState.ui.setOpenedTypeSidebar('messenger')
         })
         this.dataChannel.addEventListener('close', () => {
+            console.log('close---')
             rootState.ui.setOpenedTypeSidebar('connect')
         })
         this.dataChannel.addEventListener('message', (e) => {
@@ -85,24 +93,28 @@ export class RTCService extends Observer {
         this.dataChannel.send(message)
     }
 
-    createOffer = async (calleeId: string) => {
+    createOffer = async ({ calleeId, callType, isRandom }: CreateOfferData) => {
         try {
-            this.setUpPeers()
+            this.setUpPeers(callType)
             this.setUpDataChannel()
             const localPeer = this.localPeer as RTCPeerConnection
 
+            const cancel = () => {
+                this.disconnect()
+                socketService.sendDisconnect(calleeId)
+            }
+
             rootState.callModal.setData({
-                title: 'Calling',
-                description: `Callee Id: ${calleeId}`,
-                onClose: this.disconnect,
-                onReject: this.disconnect,
+                title: isRandom ? 'Random calling' : 'Calling',
+                description: isRandom ? '' : `Callee Id: ${calleeId}`,
+                onClose: cancel,
+                onReject: cancel,
             })
             rootState.callModal.setShow(true)
 
             const offer = await localPeer.createOffer()
             await localPeer.setLocalDescription(offer)
             socketService.sendOffer({
-                callType: 'VIDEO_PERSONAL',
                 status: 'WAIT_ANSWER',
                 caller: {
                     id: rootState.media.personalCode,
@@ -111,7 +123,8 @@ export class RTCService extends Observer {
                 callee: {
                     id: calleeId,
                     sdp: null,
-                }
+                },
+                callType,
             })
         } catch (err) {
             console.error('create offer error:', err)
@@ -124,14 +137,35 @@ export class RTCService extends Observer {
         }
     }
 
+    createRandomOffer = async (callType: CallType) => {
+        socketService.sendRandomOffer({
+            calleeId: '',
+            isRandom: true,
+            callType,
+        })
+    }
+
     handleOffer = async (data: OfferData) => {
+        const isConnected = rootState.call.isConnected
+        const isRandomCall = data.callType === 'VIDEO_RANDOM' || data.callType === 'CHAT_RANDOM'
+
         const decline = (status: OfferDataStatus) => () => {
             socketService.sendAnswer({
                 ...data,
                 status,
             })
         }
-        if (rootState.media.isConnected) {
+        if (isConnected && isRandomCall) {
+            decline('BUSY_RANDOM')()
+        } else if (!rootState.ui.allowRandomConnect && isRandomCall) {
+            decline('NOT_ALLOWED_RANDOM')()
+
+            /// Решить проблему бесконечного цикла, когда нет людей доступных
+            /// для рандомного подключения
+
+
+
+        } else if (isConnected) {
             decline('BUSY')()
         } else {
             rootState.callModal.setData({
@@ -146,25 +180,23 @@ export class RTCService extends Observer {
 
     acceptOffer = async (data: OfferData) => {
         try {
-            this.setUpPeers()
-            // this.setUpDataChannel()
+            this.setUpPeers(data.callType)
 
             console.log('handled offer', data);
             if (this.localPeer && data.caller.sdp) {
+                const call = rootState.call
                 this.localPeer.setRemoteDescription(data.caller.sdp)
                 const answer = await this.localPeer.createAnswer()
                 this.localPeer.setLocalDescription(answer)
-
-                this.caller = data.caller
-                this.callee = {
+                call.setCaller(data.caller)
+                call.setCallee({
                     ...data.callee,
                     sdp: answer
-                }
-
+                })
                 const answerWithCalleeSDP: OfferData = {
                     ...data,
                     status: 'ACCEPTED',
-                    callee: this.callee
+                    callee: call.callee as OfferPerson
                 }
                 socketService.sendAnswer(answerWithCalleeSDP)
             }
@@ -176,9 +208,15 @@ export class RTCService extends Observer {
     handleAnswer = async (data: OfferData) => {
         try {
             console.log('sdp answer', data)
+            if (data.status === 'BUSY_RANDOM' || data.status === 'NOT_ALLOWED_RANDOM') {
+                this.disconnect({resetModal: false})
+                this.createRandomOffer(data.callType)
+                return null;
+            }
             if (this.localPeer && data.callee.sdp && data.status === 'ACCEPTED') {
-                this.caller = data.caller
-                this.callee = data.callee
+                const call = rootState.call
+                call.setCaller(data.caller)
+                call.setCallee(data.callee)
                 await this.localPeer.setRemoteDescription(data.callee.sdp)
                 rootState.callModal.setShow(false)
             } else {
@@ -205,25 +243,37 @@ export class RTCService extends Observer {
         }
     }
 
-    disconnect = () => {
-        rootState.media.setIsConnected(false)
+    disconnect = (options: DisconnectOptions = {}) => {
+        const {
+            resetModal = true,
+        } = options
+
+        const call = rootState.call
+        rootState.call.setIsConnected(false)
         this.localPeer?.close()
         this.dataChannel?.close()
         this.localPeer = null
         this.dataChannel = null
         rootState.media.resetRemoteStream()
-        rootState.callModal.setShow(false)
-        rootState.callModal.reset()
         rootState.ui.cleanMessages()
-        this.caller = null
+        call.setCaller(null)
+        call.setCallee(null)
+        if (resetModal) {
+            rootState.callModal.setShow(false)
+            rootState.callModal.reset()
+        }
     }
 
     sendDisconnect = () => {
-        const isCaller = rootState.media.personalCode === this.caller?.id
+        const callerId = rootState.call.caller?.id
+        const calleeId = rootState.call.callee?.id
+        const isCaller = rootState.media.personalCode === callerId
         if (isCaller) {
-            socketService.sendDisconnect(this.callee?.id || '')
+            socketService.sendDisconnect(calleeId || '')
+            console.log(123123)
         } else {
-            socketService.sendDisconnect(this.caller?.id || '')
+            console.log(456456)
+            socketService.sendDisconnect(callerId || '')
         }
     }
 }

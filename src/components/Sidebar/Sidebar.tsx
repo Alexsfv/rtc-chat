@@ -13,7 +13,6 @@ export const Sidebar: React.FC<{}> = observer(() => {
         <Wrapper opened={uiState.openedSideBar}>
             <Background onClick={() => uiState.setOpenedSidebar(false)} />
             <Body opened={uiState.openedSideBar}>
-                
                 {
                     uiState.openedTypeSidebar === "connect" &&
                     <ConnectBar />

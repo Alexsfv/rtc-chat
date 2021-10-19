@@ -11,7 +11,7 @@ import { rootState } from 'store'
 
 export const View: React.FC<{}> = observer(() => {
 
-    const media = rootState.media
+    const call = rootState.call
 
     return (
         <Wrapper>
@@ -20,7 +20,7 @@ export const View: React.FC<{}> = observer(() => {
             <LocalVideo />
             <Placeholder />
             {
-                media.isConnected && <>
+                call.isConnected && <>
                     <RemoteVideo />
                     <ViewControls />
                 </>

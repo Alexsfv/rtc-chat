@@ -5,6 +5,7 @@ import { useState } from "react"
 import { observer } from 'mobx-react-lite'
 import { rootState } from 'store'
 import { rtcService } from 'services'
+import { hasTrack } from 'utils'
 
 export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
 
@@ -35,12 +36,18 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
 
     return (
         <Wrapper>
-            <CallControl onClick={handleMicro}>
-                <i className={`fa fa-microphone${activeMicro ? '' : "-slash"} icon`} />
-            </CallControl>
-            <CallControl onClick={handleVideo}>
-                <i className="fa fa-camera icon"></i>
-            </CallControl>
+            {
+                hasTrack(media.remoteStream, 'audio') &&
+                <CallControl onClick={handleMicro}>
+                    <i className={`fa fa-microphone${activeMicro ? '' : "-slash"} icon`} />
+                </CallControl>
+            }
+            {
+                hasTrack(media.remoteStream, 'video') &&
+                <CallControl onClick={handleVideo}>
+                    <i className="fa fa-camera icon"></i>
+                </CallControl>
+            }
             <CallControl
                 size="large"
                 color="red"
@@ -51,9 +58,12 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
             <CallControl>
                 <i className="fa fa-desktop icon"></i>
             </CallControl>
-            <CallControl>
-                <i className="fa fa-bullseye icon"></i>
-            </CallControl>
+            {
+                hasTrack(media.remoteStream, 'video') &&
+                <CallControl>
+                    <i className="fa fa-bullseye icon"></i>
+                </CallControl>
+            }
         </Wrapper>
     )
 })
