@@ -21,8 +21,7 @@ export const Wrapper = styled.div`
 
 export const MessageList = styled.div`
     display: grid;
-    height: 100%;
-    max-height: 600px;
+    height: calc(100% - 50px);
     padding: 0 20px 60px 0;
     align-content: flex-start;
     overflow: auto;

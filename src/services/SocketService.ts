@@ -1,4 +1,4 @@
-import { CreateOfferData, DisconnectPeer, IceCandidateData, OfferData } from 'services'
+import { CreateOfferData, IceCandidateData, OfferData } from 'services'
 import io, { Socket } from 'socket.io-client'
 import { rootState } from 'store'
 import { rtcService } from './index'
@@ -33,6 +33,10 @@ class SocketService {
         })
         this.socket?.on('peerDisconnect', () => {
             rtcService.disconnect()
+        })
+        this.socket?.on('emptyAvailableRandom', () => {
+            rtcService.disconnect()
+            rootState.callModal.emptyRandom()
         })
     }
 

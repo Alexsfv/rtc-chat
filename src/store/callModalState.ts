@@ -1,4 +1,4 @@
-import { makeAutoObservable, action } from 'mobx'
+import { makeAutoObservable, action, runInAction } from 'mobx'
 
 type AnswerCallback = (() => void) | null
 interface ICallModalStore {
@@ -47,6 +47,18 @@ export class CallModalStore implements ICallModalStore {
         this.onAccept = null
         this.onReject = null
         this.onClose = null
+    }
+
+    emptyRandom = () => {
+        this.setData({
+            title: 'Not found',
+            description: 'The list with available random persons is empty',
+        })
+        this.setShow(true)
+        setTimeout(() => {
+            this.setShow(false)
+            runInAction(this.reset)
+        }, 3500)
     }
 }
 

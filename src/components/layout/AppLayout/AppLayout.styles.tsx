@@ -4,10 +4,11 @@ import styled from 'styled-components';
 
 export const Layout = styled.div`
     display: grid;
-	min-height: 100vh;
+	height: 100vh;
     width: 100%;
     padding: 10px;
     grid-template-columns: 1fr 480px;
+    grid-template-rows: calc(100vh - 20px);
 
     @media (max-width: ${BREAKPOINTS.XXL}px) {
         grid-template-columns: 1fr 420px;
@@ -21,6 +22,7 @@ export const Layout = styled.div`
         // Position fixed
         padding: 0px;
         grid-template-columns: 1fr;
+        grid-template-rows: 100vh;
     }
 `
 

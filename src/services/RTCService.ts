@@ -1,18 +1,15 @@
 import { CallType, CreateOfferData, IceCandidateData, OfferData, OfferDataStatus, OfferPerson, socketService } from 'services';
 import { rootState } from 'store';
 import { callModalTitleRequest } from 'utils';
-import { Observer } from './Observer';
 import { DisconnectOptions } from './types';
 
 const serversConfig: RTCConfiguration = {
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
 }
 
-export class RTCService extends Observer {
+export class RTCService {
     localPeer: RTCPeerConnection | null = null
     dataChannel: RTCDataChannel | null = null
-
-    constructor() { super() }
 
     setUpPeers = (callType: CallType) => {
         const localStream = rootState.media.localStream
@@ -42,9 +39,7 @@ export class RTCService extends Observer {
 
         const handleTrack = (e: RTCTrackEvent) => {
             console.log('handleTrack', e)
-            // const tracksLength = rootState.media.remoteStream.getTracks().length
             rootState.media.remoteStream.addTrack(e.track)
-            // rootState.media.setIsConnected(tracksLength !== 0)
         }
 
         const handleDataChannel = (e: RTCDataChannelEvent) => {
@@ -64,12 +59,10 @@ export class RTCService extends Observer {
 
     setUpDataChannel = () => {
         if (!this.localPeer) {
-            console.log('111111111111111112222222222222222222');
             return null;
         }
         console.log('setUpDataChannel');
         if (!this.dataChannel) {
-            console.log('555555555');
             this.dataChannel = this.localPeer.createDataChannel('message')
         }
         this.dataChannel.addEventListener('open', () => {
@@ -137,11 +130,12 @@ export class RTCService extends Observer {
         }
     }
 
-    createRandomOffer = async (callType: CallType) => {
+    createRandomOffer = async (callType: CallType, prevRandomCalleeId: string = '') => {
         socketService.sendRandomOffer({
             calleeId: '',
             isRandom: true,
             callType,
+            prevRandomCalleeId,
         })
     }
 
@@ -159,12 +153,6 @@ export class RTCService extends Observer {
             decline('BUSY_RANDOM')()
         } else if (!rootState.ui.allowRandomConnect && isRandomCall) {
             decline('NOT_ALLOWED_RANDOM')()
-
-            /// Решить проблему бесконечного цикла, когда нет людей доступных
-            /// для рандомного подключения
-
-
-
         } else if (isConnected) {
             decline('BUSY')()
         } else {
@@ -209,8 +197,8 @@ export class RTCService extends Observer {
         try {
             console.log('sdp answer', data)
             if (data.status === 'BUSY_RANDOM' || data.status === 'NOT_ALLOWED_RANDOM') {
-                this.disconnect({resetModal: false})
-                this.createRandomOffer(data.callType)
+                this.disconnect({ resetModal: false })
+                this.createRandomOffer(data.callType, data.callee.id)
                 return null;
             }
             if (this.localPeer && data.callee.sdp && data.status === 'ACCEPTED') {
@@ -270,9 +258,7 @@ export class RTCService extends Observer {
         const isCaller = rootState.media.personalCode === callerId
         if (isCaller) {
             socketService.sendDisconnect(calleeId || '')
-            console.log(123123)
         } else {
-            console.log(456456)
             socketService.sendDisconnect(callerId || '')
         }
     }

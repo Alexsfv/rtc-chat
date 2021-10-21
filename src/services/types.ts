@@ -26,6 +26,7 @@ export interface CreateOfferData {
     callType: CallType
     calleeId: string
     isRandom?: boolean
+    prevRandomCalleeId?: string
 }
 
 export interface DisconnectOptions {

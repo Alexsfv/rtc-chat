@@ -60,7 +60,7 @@ export const Title = styled.p`
 
 export const Description = styled.p`
     width: 100%;
-    margin: 40px 0;
+    margin: 0 0 40px;
     font-size: 28px;
     text-align: center;
     word-break: break-word;
@@ -75,6 +75,7 @@ export const IconWrapper = styled.div`
     position: relative;
     height: 0;
     width: 70%;
+    margin: 0 0 40px;
     padding-bottom: 70%;
     display: grid;
     justify-content: center;

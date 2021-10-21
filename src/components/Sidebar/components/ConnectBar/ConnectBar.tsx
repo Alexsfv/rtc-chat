@@ -12,7 +12,6 @@ export const ConnectBar: React.FC<ConnectBarProps> = observer(() => {
     const isConnected = rootState.call.isConnected
     const ui = rootState.ui
 
-    const [allowRandom, setAllowRandom] = useState(false)
     const [connectCode, setConnectCode] = useState('')
 
     const handleCopyCode = () => {
