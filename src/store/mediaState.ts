@@ -5,8 +5,10 @@ class MediaStore {
     localStream: MediaStream = new MediaStream()
     remoteStream: MediaStream = new MediaStream()
     screenStream: MediaStream = new MediaStream()
-    isActiveScreen: boolean = false
     personalCode: string = ""
+    isActiveScreen: boolean = false
+    isRecordingStream: boolean = false
+    isRecordingStreamPause: boolean = false
 
     constructor() {
         makeAutoObservable(
@@ -17,6 +19,8 @@ class MediaStore {
                 resetRemoteStream: action.bound,
                 captureScreen: action.bound,
                 setIsActiveScreen: action.bound,
+                setIsRecordingStream: action.bound,
+                setIsRecordingStreamPause: action.bound,
             }
         )
     }
@@ -58,6 +62,14 @@ class MediaStore {
 
     setIsActiveScreen = (val: boolean) => {
         this.isActiveScreen = val
+    }
+
+    setIsRecordingStream = (val: boolean) => {
+        this.isRecordingStream = val
+    }
+
+    setIsRecordingStreamPause = (val: boolean) => {
+        this.isRecordingStreamPause = val
     }
 }
 

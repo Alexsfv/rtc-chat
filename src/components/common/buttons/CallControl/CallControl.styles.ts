@@ -11,7 +11,7 @@ export const StyledButton = styled.button<CallControlProps>`
     border: none;
     cursor: pointer;
     transition: filter .2s ease;
-    color: ${COLORS.WHITE};
+    color: ${({fontColor}) => fontColor ? fontColor : COLORS.WHITE};
     background-color: ${p => p.color === "red" ? COLORS.DANGER : COLORS.BLACK_LITE};
 
     &:hover {

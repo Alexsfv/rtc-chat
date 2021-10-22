@@ -6,6 +6,7 @@ export const CallControl = React.forwardRef<HTMLButtonElement, CallControlProps>
     const {
         size = "small",
         color = "default",
+        fontColor,
         children,
         ...otherProps
     } = props
@@ -14,6 +15,7 @@ export const CallControl = React.forwardRef<HTMLButtonElement, CallControlProps>
         <StyledButton
             size={size}
             color={color}
+            fontColor={fontColor}
             ref={ref}
             {...otherProps}
         >

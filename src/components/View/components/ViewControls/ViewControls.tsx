@@ -4,7 +4,7 @@ import { Wrapper } from './ViewControls.styled'
 import { useState } from "react"
 import { observer } from 'mobx-react-lite'
 import { rootState } from 'store'
-import { rtcService } from 'services'
+import { recordService, rtcService } from 'services'
 import { hasTrack } from 'utils'
 
 export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
@@ -41,6 +41,16 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
         rtcService.switchScreenTracks()
     }
 
+    const handleRecord = () => {
+        if (!media.isRecordingStream) {
+            media.setIsRecordingStream(true)
+            recordService.recordStream(media.remoteStream)
+        } else {
+            recordService.stopRecording()
+            media.setIsRecordingStream(false)
+        }
+    }
+
     return (
         <Wrapper>
             {
@@ -67,7 +77,10 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
             </CallControl>
             {
                 hasTrack(media.remoteStream, 'video') &&
-                <CallControl>
+                <CallControl
+                    fontColor={media.isRecordingStream ? 'red' : undefined}
+                    onClick={handleRecord}
+                >
                     <i className="fa fa-bullseye icon"></i>
                 </CallControl>
             }
