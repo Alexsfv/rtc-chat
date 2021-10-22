@@ -17,10 +17,10 @@ export const LocalVideo: React.FC<LocalVideoProps> = observer((props) => {
     useEffect(() => {
         const video = videoRef.current
         if (video) {
-            video.srcObject = media.localStream
+            video.srcObject = media.isActiveScreen ? media.screenStream : media.localStream
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [media.localStream])
+    }, [media.localStream, media.isActiveScreen])
 
     return (
         <Wrapper>

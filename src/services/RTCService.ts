@@ -12,7 +12,6 @@ export class RTCService {
     dataChannel: RTCDataChannel | null = null
 
     setUpPeers = (callType: CallType) => {
-        const localStream = rootState.media.localStream
         this.localPeer = new RTCPeerConnection(serversConfig)
 
         const handleConnectionChange = () => {
@@ -37,11 +36,6 @@ export class RTCService {
             }
         }
 
-        const handleTrack = (e: RTCTrackEvent) => {
-            console.log('handleTrack', e)
-            rootState.media.remoteStream.addTrack(e.track)
-        }
-
         const handleDataChannel = (e: RTCDataChannelEvent) => {
             this.dataChannel = e.channel
             this.setUpDataChannel()
@@ -52,8 +46,47 @@ export class RTCService {
         this.localPeer.addEventListener('datachannel', handleDataChannel)
 
         if (callType === 'VIDEO_PERSONAL' || callType === 'VIDEO_RANDOM') {
-            this.localPeer.addEventListener('track', handleTrack)
-            localStream.getTracks().forEach(t => this.localPeer?.addTrack(t, localStream))
+            this.setUpTracks()
+        }
+    }
+
+    setUpTracks = () => {
+        if (!this.localPeer) return null;
+        const localStream = rootState.media.localStream
+
+        const handleTrack = (e: RTCTrackEvent) => {
+            console.log('handleTrack', e)
+            rootState.media.remoteStream.addTrack(e.track)
+        }
+
+        this.localPeer.addEventListener('track', handleTrack)
+
+        localStream.getTracks().forEach(t => {
+            this.localPeer?.addTrack(t, localStream) as RTCRtpSender
+        })
+    }
+
+    switchScreenTracks = () => {
+        if (!this.localPeer) return null;
+        const media = rootState.media
+        if (media.isActiveScreen) {
+            const localStream = media.localStream
+            const senders = this.localPeer.getSenders()
+            const localVideoTrack = localStream.getVideoTracks()[0]
+            const videoSender = senders.find(s => s.track?.kind === localVideoTrack.kind)
+            if (videoSender) {
+                videoSender.replaceTrack(localVideoTrack)
+                media.setIsActiveScreen(false)
+            }
+        } else {
+            const screenStream = media.screenStream
+            const senders = this.localPeer.getSenders()
+            const screenVideoTrack = screenStream.getVideoTracks()[0]
+            const videoSender = senders.find(s => s.track?.kind === screenVideoTrack.kind)
+            if (videoSender) {
+                videoSender.replaceTrack(screenVideoTrack)
+                media.setIsActiveScreen(true)
+            }
         }
     }
 
@@ -243,6 +276,7 @@ export class RTCService {
         this.localPeer = null
         this.dataChannel = null
         rootState.media.resetRemoteStream()
+        rootState.media.setIsActiveScreen(false)
         rootState.ui.cleanMessages()
         call.setCaller(null)
         call.setCallee(null)

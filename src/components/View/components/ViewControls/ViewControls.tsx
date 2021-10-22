@@ -34,6 +34,13 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
         rtcService.disconnect()
     }
 
+    const handleChangeLocalStream = async () => {
+        if (!media.isActiveScreen) {
+            await media.captureScreen()
+        }
+        rtcService.switchScreenTracks()
+    }
+
     return (
         <Wrapper>
             {
@@ -55,7 +62,7 @@ export const ViewControls: React.FC<ViewControlsProps> = observer(() => {
             >
                 <i className="fa fa-phone icon-large"></i>
             </CallControl>
-            <CallControl>
+            <CallControl onClick={handleChangeLocalStream}>
                 <i className="fa fa-desktop icon"></i>
             </CallControl>
             {
