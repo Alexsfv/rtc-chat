@@ -28,7 +28,10 @@ class MediaStore {
     receiveLocalStream = async () => {
         try {
             const constraints = { audio: true, video: true }
+            console.log('stream getting began');
+
             const stream = await window.navigator.mediaDevices.getUserMedia(constraints)
+            console.log('stream getting ends', stream);
             runInAction(() => {
                 this.localStream = stream
             })
@@ -47,14 +50,14 @@ class MediaStore {
 
     captureScreen = async (): Promise<boolean> => {
         try {
-            const options: DisplayMediaStreamConstraints  = {
+            const options: DisplayMediaStreamConstraints = {
                 video: true,
                 audio: true
             }
             const screen = await navigator.mediaDevices.getDisplayMedia(options)
             runInAction(() => this.screenStream = screen)
             return true
-        } catch(err) {
+        } catch (err) {
             console.error('Capture screen error: ', err)
             return false
         }

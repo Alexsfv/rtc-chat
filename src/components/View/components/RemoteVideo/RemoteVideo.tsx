@@ -1,5 +1,5 @@
 import { RemoteVideoProps } from "./RemoteVideo.types"
-import { Wrapper, Video } from './RemoteVideo.styled'
+import { Wrapper } from './RemoteVideo.styled'
 import { observer } from 'mobx-react-lite'
 import { rootState } from 'store'
 import { useEffect, useRef } from 'react'
@@ -11,6 +11,8 @@ export const RemoteVideo: React.FC<RemoteVideoProps> = observer(() => {
 
     const videoRef = useRef<HTMLVideoElement>(null)
 
+    const hasRemoteVideo = Boolean(media.remoteStream.getVideoTracks()[0])
+
     useEffect(() => {
         const video = videoRef.current
         if (video) {
@@ -21,12 +23,16 @@ export const RemoteVideo: React.FC<RemoteVideoProps> = observer(() => {
 
     return (
         <Wrapper>
-            <Video
-                ref={videoRef}
-                loop
-                muted
-                autoPlay
-            />
+            {
+                hasRemoteVideo &&
+                <video
+                    className="video"
+                    ref={videoRef}
+                    loop
+                    muted
+                    autoPlay
+                />
+            }
         </Wrapper>
     )
 })

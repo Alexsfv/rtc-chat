@@ -16,14 +16,14 @@ export const Wrapper = styled.div`
     overflow: hidden;
     z-index: 2;
 
+    .video {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
     @media (max-width: ${BREAKPOINTS.XS}px) {
         left: 10px;
         top: 10px;
     }
-`
-
-export const Video = styled.video`
-    display: block;
-    width: 100%;
-    height: 100%;
 `

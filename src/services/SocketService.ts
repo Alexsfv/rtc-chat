@@ -8,7 +8,8 @@ class SocketService {
     socket: Socket | null = null
 
     connect = () => {
-        this.socket = io('ws://localhost:3000')
+        const socketUrl = process.env.NODE_ENV === 'production' ? '/' : 'ws://localhost:3000'
+        this.socket = io(socketUrl)
         this.socket.on('connect', this.initSubscribers)
     }
 

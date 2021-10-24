@@ -1,5 +1,5 @@
 import { LocalVideoProps } from "./LocalVideo.types"
-import { Wrapper, Video } from './LocalVideo.styled'
+import { Wrapper } from './LocalVideo.styled'
 import { observer } from 'mobx-react-lite'
 import { rootState } from 'store'
 import { useEffect, useRef } from 'react'
@@ -8,6 +8,8 @@ export const LocalVideo: React.FC<LocalVideoProps> = observer((props) => {
 
     const media = rootState.media
     const videoRef = useRef<HTMLVideoElement>(null)
+
+    const hasLocalVideo = Boolean(media.localStream.getVideoTracks()[0])
 
     useEffect(() => {
         media.receiveLocalStream()
@@ -24,13 +26,17 @@ export const LocalVideo: React.FC<LocalVideoProps> = observer((props) => {
 
     return (
         <Wrapper>
-            <Video
-                ref={videoRef}
-                loop
-                muted
-                autoPlay
-                {...props}
-            />
+            {
+                hasLocalVideo &&
+                <video
+                    className="video"
+                    ref={videoRef}
+                    loop
+                    muted
+                    autoPlay
+                    {...props}
+                />
+            }
         </Wrapper>
     )
 })

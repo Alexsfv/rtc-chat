@@ -12,10 +12,10 @@ export const Wrapper = styled.div`
     top: 0;
     border-radius: 12px;
     overflow: hidden;
-`
 
-export const Video = styled.video`
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    .video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 `
